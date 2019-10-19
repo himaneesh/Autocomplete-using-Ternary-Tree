@@ -1,0 +1,67 @@
+package oracle;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Trie {
+
+    TrieNode root = new TrieNode('r');
+
+    public static void main(String[] args) {
+        Trie tst = new Trie();
+        System.out.println(tst.insertDriver(new String[] { "himanish", "hillary", "himani", "himesh", "henry" }));
+
+        List<String> searchPrefix = tst.searchPrefixDriver("him");
+
+        for (String s : searchPrefix) {
+            System.out.println(s);
+        }
+    }
+
+    TrieNode insertDriver(String words[]) {
+        for (String word : words) {
+            insert(word.toCharArray(), root, 0);
+        }
+        return root;
+    }
+
+    TrieNode insert(char letters[], TrieNode curr, int index) {
+        if (letters.length <= index) {
+            curr.isWord = true;
+            return null;
+        }
+        if (curr.children[letters[index] - 'a'] == null) {
+            curr.children[letters[index] - 'a'] = new TrieNode(letters[index]);
+        }
+        curr.children[letters[index] - 'a'].prefix.add(String.valueOf(letters));
+        insert(letters, curr.children[letters[index] - 'a'], index + 1);
+        return curr;
+    }
+
+    List<String> searchPrefixDriver(String prefix) {
+        return searchPrefix(prefix.toCharArray(), root, 0);
+    }
+
+    List<String> searchPrefix(char[] letters, TrieNode curr, int index) {
+        if (letters.length <= index) {
+            return curr.prefix;
+        }
+        if (curr.children[letters[index] - 'a'] == null) {
+            return curr.prefix;
+        } else
+            return searchPrefix(letters, curr.children[letters[index] - 'a'], index + 1);
+    }
+}
+
+class TrieNode {
+    char val;
+    TrieNode[] children;
+    List<String> prefix;
+    boolean isWord;
+
+    protected TrieNode(char val) {
+        children = new TrieNode[26];
+        this.val = val;
+        prefix = new ArrayList<String>();
+    }
+}
